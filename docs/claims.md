@@ -24,9 +24,25 @@ confusing them is the single most likely way to lose a judging conversation:
 ## How to present it
 
 **Lead with the decision, not the mathematics.** The analysis moved the
-planned readout from 3 h to ~1 h, and the wet lab's H₂O₂ and CuSO₄ time points
-were chosen from it. That is the Model criterion — a model that changed what
-the team did — and it is worth more than a tighter bound.
+planned readout from 3 h to ~1 h, and the wet lab's **H₂O₂** time points were
+chosen from it. That is the Model criterion — a model that changed what the
+team did — and it is worth more than a tighter bound.
+
+**Be precise about which stressor.** H₂O₂ is the `ox` branch, and that
+recommendation is model-derived: the CRLB window plus the ablation study's
+age-resolution table. **CuSO₄ has no model at all** — `VARIANTS` in
+`ichnos_config.py` is `{ox, er}`, and copper appears once in the whole
+codebase as a note that TIP is shared "in ox/er/copper". The CuSO₄ time-point
+advice (bracket the peak with 0.5 / 1 / 2 h) came from identifiability
+reasoning applied to the wet lab's own observation that the signal peaks near
+1 h and falls at high dose — a peak sitting at the edge of the sampling window
+makes peak position and amplitude mutually unidentifiable — not from any
+computation in this repo.
+
+Do not blur the two. Presented correctly it is a better story anyway: we told
+the wet lab where we could compute and where we could not, and the
+recommendation was *different* in the two cases — more time points precisely
+where no model exists to interpolate between them.
 
 **Then the validation, which almost nobody does.** We did not only compute a
 Cramér–Rao bound; we tested whether any estimator reaches it, and found it
@@ -53,6 +69,10 @@ which of your quantities are measured.
   recovered estimates converges to the matrix's own prediction.
 - *"Is 30-minute dating real?"* — Not yet. It rests on an unmeasured photon
   budget and an unmeasured kinetic parameter. Here is the measurement plan.
+- *"Does your model cover all three stressors?"* — No. There are two
+  branches, ox (H₂O₂) and er (DTT). There is no copper model. We said so to
+  the wet lab when they asked, and designed the CuSO₄ time points to carry
+  the shape in the data instead.
 - *"Why did you change the model mid-project?"* — Because we found and
   documented three defects in our own code (`docs/findings.md`), including one
   that hid a 3.6× brightness difference between branches.
