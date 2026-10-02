@@ -19,8 +19,11 @@ absolute numbers are waiting on.
 | `scripts/step1_factorial.py` | One-variable-at-a-time over pre-equilibration × clearance, so each protocol change's contribution is separable. |
 | `scripts/step1_diagnose.py` | Isolates how much of a change is the photon-scale re-anchoring artifact vs physics. |
 | `scripts/step1_match_ablation.py` | Runs this code on the ablation study's exact protocol, to compare like with like. |
+| `scripts/crlb_attainment.py` | **Validation**: is the bound actually reachable, and at how many pooled cells? Maximum-likelihood recovery from synthetic Poisson measurements vs `F⁻¹`. |
+| `scripts/plot_attainment.py` | The figure for that test. |
 | `scripts/unify_crlb.py` | Same trajectory, same parameterization, noise model swapped (Poisson ↔ lognormal CV). |
 | `docs/findings.md` | What the reconciliation found, with the receipts. |
+| `docs/attainment.md` | The validation result and what it licenses us to claim. |
 
 ## Setup
 
@@ -31,12 +34,15 @@ sensitivity/ablation analyses can never silently diverge.
 ```bash
 git clone https://github.com/ioanna888/Ichnos_PULSE.git
 pip install -r requirements.txt           # numpy, python-libsbml, tellurium
-export PYTHONPATH=$PWD/Ichnos_PULSE/python
+export PYTHONPATH=$PWD/Ichnos_PULSE/python:$PWD/Ichnos_PULSE/python/sensitivity_analysis/sensitivity
 python fisher_info_v3_1.py
 ```
 
 `run_sensitivity_v4.py` must be importable from `PYTHONPATH` — it provides the
-`Variant` class and `resolve()`. The ablation study's independent CRLB
+`Variant` class and `resolve()`. On the current main branch it sits under
+`python/sensitivity_analysis/sensitivity/`, which is why two paths are needed.
+On Windows PowerShell:
+`$env:PYTHONPATH = "$PWD\Ichnos_PULSE\python;$PWD\Ichnos_PULSE\python\sensitivity_analysis\sensitivity"`. The ablation study's independent CRLB
 implementation lives separately, at
 `https://github.com/marifylli/ICHNOS-ablation` (`ichnos_ablation.py`,
 `decoding_crlb()`); this repo does not vendor either codebase.
@@ -46,6 +52,15 @@ pre-equilibration horizon, the photon scale and the detection mode. **No number
 from this repo should be quoted without it.**
 
 ## Status
+
+### Validated
+
+- **The FIM implementation.** Two independent differentiation routes agree to
+  0.64%, and the empirical dose/time correlation of recovered estimates
+  converges to the FIM's own (−0.923 against −0.929).
+- **The bound is attainable — but only as a population measurement.** It is
+  missed by 4.6× at one cell, reached from about 10 pooled cells for timing
+  and about 300–1000 for dose. See `docs/attainment.md`.
 
 ### Trustworthy
 
@@ -58,6 +73,8 @@ from this repo should be quoted without it.**
 
 ### Not yet anchored
 
+- **Any single-cell σ_t.** The bound does not describe a one-cell decoder at
+  all: the estimator is biased +30 min on a 60 min truth at N = 1.
 - **Every absolute σ_t and σ_dose.** Fisher information is linear in λ, so
   σ_t ∝ 1/√`PHOTONS_PER_UNIT`, and that constant is a placeholder. The Photon
   Transfer Curve measurement replaces it.
