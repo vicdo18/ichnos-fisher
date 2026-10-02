@@ -21,9 +21,12 @@ absolute numbers are waiting on.
 | `scripts/step1_match_ablation.py` | Runs this code on the ablation study's exact protocol, to compare like with like. |
 | `scripts/crlb_attainment.py` | **Validation**: is the bound actually reachable, and at how many pooled cells? Maximum-likelihood recovery from synthetic Poisson measurements vs `F⁻¹`. |
 | `scripts/plot_attainment.py` | The figure for that test. |
+| `scripts/ridge_stability.py` | Moves along the unmeasurable `d_x`/`k_off` ridge, with a negative control, to test which conclusions depend on it. |
 | `scripts/unify_crlb.py` | Same trajectory, same parameterization, noise model swapped (Poisson ↔ lognormal CV). |
 | `docs/findings.md` | What the reconciliation found, with the receipts. |
 | `docs/attainment.md` | The validation result and what it licenses us to claim. |
+| `docs/ridge.md` | Whether the conclusions survive the non-identifiable kinetics. |
+| **`docs/claims.md`** | **The claims ledger — what may be said, what supports it, how to present it.** Start here. |
 
 ## Setup
 
@@ -70,9 +73,14 @@ from this repo should be quoted without it.**
   same protocol.
 - The shape of CRLB(t), and whether an interior minimum exists at all.
 - Relative comparisons between lesions and between branches.
+- That the channels are not separable: corr moves only 6% across a 370×
+  change in the non-identifiable kinetics.
 
 ### Not yet anchored
 
+- **Absolute σ_t, for a second and independent reason.** It moves 2.34×
+  along the `d_x_ox`/`k_off_ox` ridge the data cannot constrain, so fixing
+  the photon budget alone will not anchor it (`docs/ridge.md`).
 - **Any single-cell σ_t.** The bound does not describe a one-cell decoder at
   all: the estimator is biased +30 min on a 60 min truth at N = 1.
 - **Every absolute σ_t and σ_dose.** Fisher information is linear in λ, so
